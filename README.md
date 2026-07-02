@@ -68,6 +68,16 @@ stdout devuelve una línea JSON con los metadatos mínimos del protocolo:
 - El módulo se descubre automáticamente vía el entry point
   `astro_denoise.methods` cuando se instala con `pip install -e .`.
 
+## Tests
+
+```bash
+pip install -e ".[dev]"
+pytest
+```
+
+Cubren la estimación de sigma (variance plane y MAD), la reducción efectiva
+de ruido del denoiser y el protocolo CLI end-to-end con FITS temporales.
+
 ---
 Este submódulo forma parte de la plataforma `astro-denoise`; véase
 [`CONTEXT_v2.md`](../../CONTEXT_v2.md) para arquitectura y motivación.
