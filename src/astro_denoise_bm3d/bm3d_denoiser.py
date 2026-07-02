@@ -12,8 +12,8 @@ the patch itself via the median absolute deviation.
 
 from __future__ import annotations
 
-import numpy as np
 import bm3d as _bm3d
+import numpy as np
 
 from .interface import DenoiseMethod
 
@@ -57,8 +57,7 @@ class BM3DDenoiser(DenoiseMethod):
             raise ValueError(f"stage must be 'all' or 'hard', got {stage!r}")
         self.sigma = sigma
         self._stage = (
-            _bm3d.BM3DStages.ALL_STAGES if stage == "all"
-            else _bm3d.BM3DStages.HARD_THRESHOLDING
+            _bm3d.BM3DStages.ALL_STAGES if stage == "all" else _bm3d.BM3DStages.HARD_THRESHOLDING
         )
 
     def name(self) -> str:
@@ -84,6 +83,5 @@ class BM3DDenoiser(DenoiseMethod):
         scale = max(scale, 10.0 * sigma)  # keep low-contrast patches stable
 
         normalized = (np.nan_to_num(patch, nan=offset) - offset) / scale
-        denoised = _bm3d.bm3d(normalized, sigma_psd=sigma / scale,
-                              stage_arg=self._stage)
+        denoised = _bm3d.bm3d(normalized, sigma_psd=sigma / scale, stage_arg=self._stage)
         return np.asarray(denoised, dtype=np.float64) * scale + offset

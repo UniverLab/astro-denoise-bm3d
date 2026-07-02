@@ -60,9 +60,7 @@ def main(argv=None):
 
     try:
         config = load_config(args.config)
-        denoiser = BM3DDenoiser(
-            sigma=config.get("sigma"), stage=config.get("stage", "all")
-        )
+        denoiser = BM3DDenoiser(sigma=config.get("sigma"), stage=config.get("stage", "all"))
 
         with fits.open(args.input) as hdul:
             image_hdu = find_image_hdu(hdul)
@@ -73,9 +71,7 @@ def main(argv=None):
             if denoiser.sigma is None and variance_hdu is not None:
                 variance = np.asarray(hdul[variance_hdu].data, dtype=np.float64)
                 denoiser.set_sigma_from_variance(variance)
-                console.print(
-                    f"sigma from variance plane: {denoiser.sigma:.4g}"
-                )
+                console.print(f"sigma from variance plane: {denoiser.sigma:.4g}")
 
         start = time.perf_counter()
         denoised = denoiser.denoise(image)
@@ -83,26 +79,25 @@ def main(argv=None):
 
         header["HISTORY"] = f"astro-denoise-bm3d {__version__}"
         args.output.parent.mkdir(parents=True, exist_ok=True)
-        fits.PrimaryHDU(data=denoised.astype(np.float32),
-                        header=header).writeto(args.output, overwrite=True)
-        console.print(
-            f"[green]ok[/green] {args.input.name} -> {args.output.name} "
-            f"({elapsed:.2f}s)"
+        fits.PrimaryHDU(data=denoised.astype(np.float32), header=header).writeto(
+            args.output, overwrite=True
         )
-        emit({
-            "algorithm": "bm3d",
-            "version": __version__,
-            "status": "ok",
-            "input": str(args.input),
-            "output": str(args.output),
-            "sigma": denoiser.sigma,
-            "elapsed_s": round(elapsed, 4),
-        })
+        console.print(f"[green]ok[/green] {args.input.name} -> {args.output.name} ({elapsed:.2f}s)")
+        emit(
+            {
+                "algorithm": "bm3d",
+                "version": __version__,
+                "status": "ok",
+                "input": str(args.input),
+                "output": str(args.output),
+                "sigma": denoiser.sigma,
+                "elapsed_s": round(elapsed, 4),
+            }
+        )
         return 0
     except Exception as exc:
         console.print(f"[red]error:[/red] {exc}")
-        emit({"algorithm": "bm3d", "version": __version__,
-              "status": "error", "error": str(exc)})
+        emit({"algorithm": "bm3d", "version": __version__, "status": "error", "error": str(exc)})
         return 1
 
 

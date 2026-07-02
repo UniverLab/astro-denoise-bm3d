@@ -35,9 +35,7 @@ def test_cli_denoises_and_emits_json(noisy_fits, tmp_path, capsys):
         denoised = np.asarray(hdul[0].data, dtype=np.float64)
         history = str(hdul[0].header.get("HISTORY", ""))
     assert denoised.shape == clean.shape
-    assert np.std(denoised - clean) < np.std(
-        fits.getdata(input_path).astype(np.float64) - clean
-    )
+    assert np.std(denoised - clean) < np.std(fits.getdata(input_path).astype(np.float64) - clean)
     assert "astro-denoise-bm3d" in history
 
 
@@ -45,30 +43,41 @@ def test_cli_config_sigma_and_variance_hdu(noisy_fits, tmp_path, capsys):
     input_path, _ = noisy_fits
     # Rewrite the input with an attached variance plane in HDU 1.
     image = fits.getdata(input_path).astype(np.float32)
-    hdul = fits.HDUList([
-        fits.PrimaryHDU(image),
-        fits.ImageHDU(np.full(image.shape, 16.0, dtype=np.float32), name="VARIANCE"),
-    ])
+    hdul = fits.HDUList(
+        [
+            fits.PrimaryHDU(image),
+            fits.ImageHDU(np.full(image.shape, 16.0, dtype=np.float32), name="VARIANCE"),
+        ]
+    )
     stacked = tmp_path / "stacked.fits"
     hdul.writeto(stacked)
 
     config = tmp_path / "config.json"
     config.write_text(json.dumps({"variance_hdu": 1}))
-    rc = main([
-        "--input", str(stacked),
-        "--output", str(tmp_path / "out.fits"),
-        "--config", str(config),
-    ])
+    rc = main(
+        [
+            "--input",
+            str(stacked),
+            "--output",
+            str(tmp_path / "out.fits"),
+            "--config",
+            str(config),
+        ]
+    )
     assert rc == 0
     status = json.loads(capsys.readouterr().out.strip().splitlines()[-1])
     assert status["sigma"] == pytest.approx(4.0)
 
 
 def test_cli_error_is_structured(tmp_path, capsys):
-    rc = main([
-        "--input", str(tmp_path / "missing.fits"),
-        "--output", str(tmp_path / "out.fits"),
-    ])
+    rc = main(
+        [
+            "--input",
+            str(tmp_path / "missing.fits"),
+            "--output",
+            str(tmp_path / "out.fits"),
+        ]
+    )
     assert rc == 1
     status = json.loads(capsys.readouterr().out.strip().splitlines()[-1])
     assert status["status"] == "error"

@@ -15,11 +15,12 @@
 ## Instalación
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-pip install -e .   # registra el entry point astro_denoise.methods/bm3d
+uv sync --all-extras
 ```
+
+Esto crea `.venv/` e instala el paquete en modo editable (`src/astro_denoise_bm3d/`),
+registrando el entry point `astro_denoise.methods/bm3d` y las dependencias de
+desarrollo (pytest, ruff, mypy).
 
 ## API
 
@@ -71,12 +72,37 @@ stdout devuelve una línea JSON con los metadatos mínimos del protocolo:
 ## Tests
 
 ```bash
-pip install -e ".[dev]"
-pytest
+uv run pytest
 ```
 
 Cubren la estimación de sigma (variance plane y MAD), la reducción efectiva
 de ruido del denoiser y el protocolo CLI end-to-end con FITS temporales.
+
+## Desarrollo
+
+```bash
+uv run ruff format .
+uv run ruff check .
+uv run mypy src/
+```
+
+Las cuatro comprobaciones (format, lint, mypy, pytest) corren en CI vía el
+workflow reusable [`UniverLab/workflows`](https://github.com/UniverLab/workflows).
+
+## Estructura del proyecto
+
+```
+astro-denoise-bm3d/
+├── pyproject.toml
+├── src/
+│   └── astro_denoise_bm3d/
+│       ├── __init__.py
+│       ├── __main__.py       # CLI entry point
+│       ├── interface.py      # DenoiseMethod ABC
+│       └── bm3d_denoiser.py
+├── tests/
+└── README.md
+```
 
 ---
 Este submódulo forma parte de la plataforma `astro-denoise`; véase

@@ -16,10 +16,25 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0"]
+dev = ["pytest>=8.0", "ruff>=0.8", "mypy>=1.13"]
 
 [project.entry-points."astro_denoise.methods"]
 bm3d = "astro_denoise_bm3d.bm3d_denoiser:BM3DDenoiser"
 
 [tool.setuptools.packages.find]
+where = ["src"]
 include = ["astro_denoise_bm3d*"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
