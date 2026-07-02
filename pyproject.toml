@@ -15,6 +15,9 @@ dependencies = [
     "rich>=13.0",
 ]
 
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
 [project.entry-points."astro_denoise.methods"]
 bm3d = "astro_denoise_bm3d.bm3d_denoiser:BM3DDenoiser"
 
