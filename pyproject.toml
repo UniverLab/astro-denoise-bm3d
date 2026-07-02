@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "astro-denoise-bm3d"
+version = "0.1.0"
+description = "BM3D classical baseline for the astro-denoise benchmark"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.26",
+    "astropy>=6.0",
+    "bm3d>=4.0",
+    "rich>=13.0",
+]
+
+[project.entry-points."astro_denoise.methods"]
+bm3d = "astro_denoise_bm3d.bm3d_denoiser:BM3DDenoiser"
+
+[tool.setuptools.packages.find]
+include = ["astro_denoise_bm3d*"]
