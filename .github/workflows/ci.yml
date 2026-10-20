@@ -11,3 +11,7 @@ jobs:
       # Trunk-based (decision 10eadef1): no version bump on PRs; the version
       # moves when a release is cut.
       main-pr-checks: false
+      # bm3d and its bm4d dependency are "free for non-commercial use"
+      # (Tampere University). This repository's own code stays Apache-2.0; the
+      # restriction applies to whoever installs bm3d, as the README states.
+      quality-license-ignore: "bm3d bm4d"

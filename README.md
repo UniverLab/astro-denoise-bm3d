@@ -69,6 +69,13 @@ stdout devuelve una línea JSON con los metadatos mínimos del protocolo:
 - El módulo se descubre automáticamente vía el entry point
   `astro_denoise.methods` cuando se instala con `pip install -e .`.
 
+## Licencia
+
+El código de este repositorio es Apache-2.0. La dependencia `bm3d` (y su
+dependencia `bm4d`, ambas de Tampere University) es *free for non-commercial
+use*: quien instale este baseline queda sujeto a esa condición. Para un uso
+comercial hay que pedir licencia a sus autores o reemplazar el método.
+
 ## Tests
 
 ```bash
